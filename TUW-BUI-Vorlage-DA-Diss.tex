@@ -82,6 +82,7 @@ Karlsplatz 13/YYY, 1040 Wien, Österreich
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{TUWBUIDADISS}
+
 %% this style includes already some packages which have been very useful 
 %% in the last diploma or doctoral theses
 %%
@@ -132,7 +133,8 @@ urlseen = {Zugriff am}}
 %% Quelle: https://texwelt.de/fragen/7008/zeilenumbruche-in-bibliografielinks
 
 %% ===== additional settings =============
-\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4} 
 \sisetup{output-decimal-marker = {,},
 range-phrase = --,
 group-separator = {~},
@@ -176,7 +178,7 @@ list-final-separator={ und }}
 
 \include{chapters/01-aufgabenstellung/01-aufgabenstellung}
 \include{chapters/02-theoretischer-hintergrund/02-theoretischer-hintergrund}
-\include{chapters/03-pki-in-xca/03-pki-in-xca}
+\include{chapters/03-konfiguration-einer-pki/03-konfiguration-einer-pki}
 \include{chapters/04-webserver/04-webserver}
 \include{chapters/05-testen-der-client-server-verbindung/05-testen-der-client-server-verbindung}
 
