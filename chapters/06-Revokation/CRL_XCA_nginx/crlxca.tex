@@ -1,127 +1,113 @@
+\subsubsection*{Ausgangssituation und Zielsetzung}
+In diesem Labor wird eine Certificate Revocation List (CRL) erstellt und über einen Webserver (Nginx) bereitgestellt. Die vorhandene CA-Struktur wurde bereits zuvor in XCA aufgebaut. Ziel ist es, ein Serverzertifikat mit einem CRL Distribution Point (CDP) zu versehen, dieses anschließend zu widerrufen und die zugehörige CRL über Nginx zugreifbar zu machen. Am Ende soll der Browser beim Inspizieren des Zertifikats korrekt auf den veröffentlichten CRL-Pfad verweisen.
 
+\subsubsection*{Anpassung des Serverzertifikats in XCA}
 
-    \section{Ausgangssituation und Zielsetzung}
-    In diesem Labor wird eine Certificate Revocation List (CRL) erstellt und über einen Webserver (Nginx) bereitgestellt. Die vorhandene CA-Struktur wurde bereits zuvor in XCA aufgebaut. Ziel ist es, ein Serverzertifikat mit einem CRL Distribution Point (CDP) zu versehen, dieses anschließend zu widerrufen und die zugehörige CRL über Nginx zugreifbar zu machen. Am Ende soll der Browser beim Inspizieren des Zertifikats korrekt auf den veröffentlichten CRL-Pfad verweisen.
+Öffnen der bestehenden CA-Struktur in XCA.
 
-    \section{Anpassung des Serverzertifikats in XCA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xcacrl1.png}
+    \caption*{XCA Übersicht}
+\end{figure}
 
-    Öffnen der bestehenden CA-Struktur in XCA.
+Auswahl des entsprechenden Serverzertifikats, das angepasst werden soll.
 
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.8\textwidth]{xcacrl1.png}
-        \caption*{XCA Übersicht}
-    \end{figure}
+Im Reiter \texttt{Extensions} bzw. \texttt{Extensions → CRL Distribution Points} den Distribution Point eintragen:
 
-    Auswahl des entsprechenden Serverzertifikats, das angepasst werden soll.
-
-    Im Reiter \texttt{Extensions} bzw. \texttt{Extensions → CRL Distribution Points} den Distribution Point eintragen:
-
-    \begin{verbatim}
+\begin{verbatim}
 http://192.168.1.1/crl/cacrl.pem
-    \end{verbatim}
+\end{verbatim}
 
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.8\textwidth]{xcacrl2.png}
-        \caption*{CRL Distribution Point}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xcacrl2.png}
+    \caption*{CRL Distribution Point}
+\end{figure}
 
-    \section{Widerruf des Serverzertifikats}
+\subsubsection*{Widerruf des Serverzertifikats}
 
-    Das soeben angepasste Serverzertifikat wird in XCA ausgewählt.
+Das soeben angepasste Serverzertifikat wird in XCA ausgewählt.
 
-    Über \texttt{Revocation / Revoke} wird das Zertifikat widerrufen.
+Über \texttt{Revocation / Revoke} wird das Zertifikat widerrufen.
 
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.8\textwidth]{xcacrl3.png}
-        \caption*{Widerruf in XCA}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xcacrl3.png}
+    \caption*{Widerruf in XCA}
+\end{figure}
 
-    Dadurch wird klar, dass dieses Zertifikat nicht mehr gültig ist und künftig in der CRL eingetragen werden muss.
+Dadurch wird klar, dass dieses Zertifikat nicht mehr gültig ist und künftig in der CRL eingetragen werden muss.
 
-    \section{Erstellen der CRL des Intermediate-Zertifikats}
+\subsubsection*{Erstellen der CRL des Intermediate-Zertifikats}
 
-    Da das widerrufene Serverzertifikat vom Intermediate-Zertifikat signiert wurde, wird die CRL auf Ebene dieser Intermediate-CA erzeugt:
+Da das widerrufene Serverzertifikat vom Intermediate-Zertifikat signiert wurde, wird die CRL auf Ebene dieser Intermediate-CA erzeugt:
 
-    \begin{itemize}
-        \item Auswahl der Intermediate-CA in XCA.
-        \item Im Bereich \texttt{CRLs} die Option \texttt{New CRL} wählen.
-        \item CRL-Parameter wie Gültigkeitsdauer übernehmen oder anpassen.
-        \item CRL erzeugen und als Datei exportieren (PEM-Format).
-    \end{itemize}
+\begin{itemize}
+    \item Auswahl der Intermediate-CA in XCA.
+    \item Im Bereich \texttt{CRLs} die Option \texttt{New CRL} wählen.
+    \item CRL-Parameter wie Gültigkeitsdauer übernehmen oder anpassen.
+    \item CRL erzeugen und als Datei exportieren (PEM-Format).
+\end{itemize}
 
-    Ausgabeformat:
+Ausgabeformat:
 
-    \begin{verbatim}
+\begin{verbatim}
 cacrl.pem
-    \end{verbatim}
+\end{verbatim}
 
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.8\textwidth]{xcacrl4.png}
-        \caption*{CRL Erstellung}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{xcacrl4.png}
+    \caption*{CRL Erstellung}
+\end{figure}
 
-    \section{Bereitstellen der CRL über Nginx}
+\subsubsection*{Bereitstellen der CRL über Nginx}
 
-    \subsection{Ablage der CRL auf dem Webserver}
+\paragraph*{Ablage der CRL auf dem Webserver}
+Auf der Ubuntu-VM den vorgesehenen Ordner unter \texttt{/var/www/html/} anlegen (falls nicht vorhanden):
 
-    Auf der Ubuntu-VM den vorgesehenen Ordner unter \texttt{/var/www/html/} anlegen (falls nicht vorhanden):
-
-    \begin{verbatim}
+\begin{verbatim}
 sudo mkdir -p /var/www/html/crl
-    \end{verbatim}
+\end{verbatim}
 
-    Die zuvor exportierte Datei \texttt{cacrl.pem} nach diesem Verzeichnis kopieren:
+Die zuvor exportierte Datei \texttt{cacrl.pem} nach diesem Verzeichnis kopieren:
 
-    \begin{verbatim}
+\begin{verbatim}
 sudo cp /pfad/zur/cacrl.pem /var/www/html/crl/
-    \end{verbatim}
+\end{verbatim}
 
-    \begin{figure}[h!]
-        \centering
+\begin{figure}[h!]
+    \centering
+    \caption*{Dateistruktur auf der VM}
+\end{figure}
 
-        \caption*{Dateistruktur auf der VM}
-    \end{figure}
+\paragraph*{Nginx neu starten}
+Nach dem Platzieren der Datei muss Nginx neu geladen werden, damit die CRL korrekt ausgeliefert wird:
 
-    \subsection{Nginx neu starten}
-
-    Nach dem Platzieren der Datei muss Nginx neu geladen werden, damit die CRL korrekt ausgeliefert wird:
-
-    \begin{verbatim}
+\begin{verbatim}
 sudo systemctl restart nginx
-    \end{verbatim}
+\end{verbatim}
 
-    \begin{figure}[h!]
-        \centering
+\begin{figure}[h!]
+    \centering
+    \caption*{Bestätigung des Neustarts}
+\end{figure}
 
-        \caption*{Bestätigung des Neustarts}
-    \end{figure}
+\subsubsection*{Überprüfung im Browser}
 
-    \section{Überprüfung im Browser}
+\begin{itemize}
+    \item Zugriff auf den Webdienst mit dem betroffenen Serverzertifikat herstellen.
+    \item Im Browser das Zertifikat inspizieren (Zertifikatsdetails öffnen).
+    \item Unter \texttt{CRL Distribution Points} sollte nun der gesetzte Link erscheinen:
+\end{itemize}
 
-    \begin{itemize}
-        \item Zugriff auf den Webdienst mit dem betroffenen Serverzertifikat herstellen.
-        \item Im Browser das Zertifikat inspizieren (Zertifikatsdetails öffnen).
-        \item Unter \texttt{CRL Distribution Points} sollte nun der gesetzte Link erscheinen:
-    \end{itemize}
-
-    \begin{verbatim}
+\begin{verbatim}
 http://192.168.1.1/crl/cacrl.pem
-    \end{verbatim}
+\end{verbatim}
 
-    Test: Der Link lässt sich im Browser öffnen – die CRL kann theoretisch heruntergeladen werden.
+Test: Der Link lässt sich im Browser öffnen – die CRL kann theoretisch heruntergeladen werden.
 
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.8\textwidth]{xcacrl3}
-        \caption*{Anzeige der CRL-URL im Browser}
-    \end{figure}
+\subsubsection*{Ergebnis}
 
-    \section{Ergebnis}
-
-    Durch die korrekte Konfiguration des CRL Distribution Points, das Widerrufen des Serverzertifikats und das Erstellen sowie Bereitstellen der CRL über Nginx kann der Browser die CRL erfolgreich finden und anzeigen. Damit ist der Widerrufsmechanismus funktional implementiert.
-
-
+Durch die korrekte Konfiguration des CRL Distribution Points, das Widerrufen des Serverzertifikats und das Erstellen sowie Bereitstellen der CRL über Nginx kann der Browser die CRL erfolgreich finden und anzeigen. Damit ist der Widerrufsmechanismus funktional implementiert.

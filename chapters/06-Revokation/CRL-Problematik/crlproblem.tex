@@ -1,0 +1,22 @@
+Bevor die verbleibenden technischen Einschränkungen erläutert werden, ist wichtig zu verstehen, dass die Unterstützung für klassische Widerrufsmechanismen wie CRLs und OCSP in modernen Browsern stark variiert.
+Während einige Browser diese Verfahren gar nicht mehr nutzen, unterstützen andere sie nur rudimentär oder mit deutlichen Einschränkungen.
+
+Dies führt dazu, dass selbst korrekt veröffentlichte CRLs – wie in unserem Setup – häufig nicht oder nur teilweise von Clients ausgewertet werden.
+Die Folge ist, dass widerrufene Zertifikate in der Praxis nicht zuverlässig erkannt werden.
+Dies betrifft insbesondere interne PKI-Umgebungen und private CAs, die nicht in globale Widerrufssysteme wie CRLite integriert sind.
+
+\paragraph*{Vertrauenskette verliert ihre Dynamik}
+Eine klassische PKI setzt darauf, dass jeder Browser regelmäßig prüft, ob ein Glied der Chain of Trust widerrufen wurde.
+Wird dieser Schritt übersprungen oder nicht unterstützt, verlieren Widerrufe ihre Wirkung.
+Ein kompromittiertes Zertifikat bleibt dann faktisch bis zum Ablaufdatum gültig – unabhängig davon, ob es offiziell widerrufen wurde.
+
+\paragraph*{Private CAs sind vom CRLite-System ausgeschlossen}
+CRLite deckt ausschließlich Widerrufsdaten von öffentlichen CAs aus dem Mozilla-Root-Store ab.
+Private oder interne CAs – wie in unserem Labor – sind in diesem System nicht enthalten.
+Dadurch werden Widerrufe solcher Zertifikate von Browsern wie Firefox weder berücksichtigt noch automatisch geprüft.
+
+\paragraph*{Fazit}
+Auch wenn wir in unserem Setup eine CRL erfolgreich erzeugt und korrekt veröffentlicht haben, bedeutet dies nicht, dass alle Browser diese Informationen nutzen.
+Gerade Firefox ignoriert CRL Distribution Points vollständig und verlässt sich stattdessen auf alternative Mechanismen wie OCSP (nur eingeschränkt) oder CRLite.
+
+Damit wird deutlich: Der technische Widerruf eines Zertifikats ist das eine – die tatsächliche Auswertung durch Clients jedoch eine völlig andere Herausforderung, die in modernen Browsern zunehmend unzuverlässig oder gar nicht mehr stattfindet.

@@ -1,6 +1,36 @@
-\chapter{Certificate Revokation}
+\chapter{Certificate Revocation}
+
+\section{CRL – Certificate Revocation Lists}
+
+\subsection{Erstellung und Veröffentlichung einer CRL}
 \input{chapters/06-Revokation/CRL_XCA_nginx/crlxca.tex}
+
+\subsection{Verhalten moderner Browser bei CRLs}
+
+\subsubsection*{Einordnung}
+Nachdem im vorherigen Abschnitt gezeigt wurde, wie eine CRL mit XCA erzeugt und über einen Webserver wie Nginx bereitgestellt wird, stellt sich in der Praxis die Frage, welche Clients diese Informationen tatsächlich auswerten. Besonders relevant ist dabei das Verhalten gängiger Browser, da diese bestimmen, ob ein Widerruf im Alltag überhaupt erkannt wird. Im Kontext unseres Setups – einer eigenen CA mit veröffentlichtem CRL Distribution Point – ist insbesondere Mozilla Firefox bemerkenswert, da der Browser die bereitgestellte CRL trotz korrekter Konfiguration in vielen Fällen nicht abruft.
+
+\subsubsection{Mozilla Firefox}
 \input{chapters/06-Revokation/CRL_im_Browser/Firefox.tex}
+
+\subsubsection{Google Chrome}
 \input{chapters/06-Revokation/CRL_im_Browser/Chrome.tex}
+
+\subsubsection{Microsoft Edge}
 \input{chapters/06-Revokation/CRL_im_Browser/Edge.tex}
+
+\subsubsection{Apple Safari}
 \input{chapters/06-Revokation/CRL_im_Browser/Safari.tex}
+
+\subsubsection*{Allgemeine Herausforderungen und Problematik bei Zertifikatswiderrufen}
+\input{chapters/06-Revokation/CRL-Problematik/crlproblem.tex}
+
+
+% ==========================================================
+%           **NEUER HAUPTPUNKT: OCSP**
+% ==========================================================
+\newpage
+
+\section{OCSP – Online Certificate Status Protocol}
+
+
