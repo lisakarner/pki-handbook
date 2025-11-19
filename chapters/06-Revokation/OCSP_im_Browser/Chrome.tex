@@ -1,0 +1,55 @@
+\section{Chrome}
+\subsection{OCSP}
+
+OCSP wurde bereits 1999 standardisiert, hatte jedoch für Browser lange keine hohe Priorität. 
+Da die meisten Browser OCSP kaum implementierten, investierten Zertifizierungsstellen nur 
+wenig in die notwendige Infrastruktur. Sobald OCSP-Server stärker unterstützt wurden, 
+zeigten sich deutliche Performanceprobleme, da jede Abfrage zusätzliche Latenz verursachte 
+und von der Verfügbarkeit des OCSP-Servers abhing (Quelle: FeistyDuck, 
+\url{https://www.feistyduck.com/newsletter/issue_121_the_slow_death_of_ocsp}).
+
+\bigskip   
+
+In der Folge wurde Soft-Fail-OCSP zur Norm. Beim Soft-Fail wird ein Zertifikat selbst dann 
+akzeptiert, wenn die OCSP-Anfrage fehlschlägt oder nicht verfügbar ist (Quelle: Radiusaas FAQ, 
+\url{https://docs.radiusaas.com/other/faqs/ocsp-soft-fail-consequences}).
+
+\bigskip   
+
+In Unternehmensumgebungen kann OCSP zwar aktiviert oder erzwungen werden, praktisch handelt es 
+sich jedoch meist um Soft-Fail-OCSP, da striktes Hard-Fail-Verhalten (Blockieren bei Ausfall 
+des OCSP-Servers) zu hoher Fehleranfälligkeit führt (Quelle: Chromium Security, 
+\url{https://www.chromium.org/Home/chromium-security/crlsets/}).
+
+\bigskip   
+
+Google Chrome unterstützt keine Live-OCSP-Abfragen, sondern verwendet stattdessen 
+CRLSets und OCSP-Stapling (Quelle: SSL.com, 
+\url{https://www.ssl.com/de/Artikel/OCSP-Stapling-%E2%80%93-sichere-und-effiziente-Zertifikatsvalidierung/}).
+
+
+
+Chrome prüft Zertifikatswiderrufe außerdem nicht über klassische OCSP-Abfragen, sondern 
+setzt auf alternative Mechanismen (Quelle: Uwe Gradenegger, 
+\url{https://www.gradenegger.eu/de/google-chrome-prueft-sperrstatus-von-zertifikaten-nicht/}).
+
+\bigskip   
+
+\begin{itemize}
+	\item \textbf{CRLSets} dienen als Notfallmechanismus für größere Sicherheitsvorfälle 
+	und werden von Google gepflegt und über Browser-Updates verteilt.
+	
+	\item \textbf{OCSP-Stapling} wird unterstützt: Der Webserver fragt selbstständig den 
+	OCSP-Responder ab, speichert die signierte OCSP-Response im Cache und sendet diese 
+	beim TLS-Handshake „gestapelt“ an den Browser (Quelle: SSL.com, 
+	\url{https://www.ssl.com/de/Artikel/OCSP-Stapling-%E2%80%93-sichere-und-effiziente-Zertifikatsvalidierung/}).
+\end{itemize}
+
+\bigskip   
+
+\textbf{Fazit:} OCSP konnte sich trotz früher Standardisierung nicht als zuverlässige 
+Sperrprüfung etablieren, da Latenz und Serververfügbarkeit zu Performanceproblemen führten. 
+Das Soft-Fail-Prinzip reduzierte den Sicherheitsnutzen erheblich. Google Chrome verzichtet 
+daher vollständig auf Live-OCSP und setzt stattdessen auf CRLSets und OCSP-Stapling. 
+Unternehmensumgebungen nutzen zwar teilweise OCSP, jedoch fast ausschließlich in der 
+Soft-Fail-Variante, um Verbindungsprobleme zu vermeiden.
